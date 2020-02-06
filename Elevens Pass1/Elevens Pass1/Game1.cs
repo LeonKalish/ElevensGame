@@ -18,8 +18,6 @@ namespace Elevens_Pass1
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
-            //  This is an example documentaton.
         }
 
         /// <summary>
