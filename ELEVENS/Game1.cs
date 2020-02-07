@@ -23,6 +23,8 @@ namespace ELEVENS
 
         List<Vector2> CardsList = new List<Vector2>();
 
+        SpriteFont TitleFont;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -38,7 +40,7 @@ namespace ELEVENS
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            TitleFont = Content.Load<SpriteFont>("Fonts/TitleFont");
             base.Initialize();
         }
 
