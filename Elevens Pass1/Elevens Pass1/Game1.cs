@@ -30,6 +30,7 @@ namespace Elevens_Pass1
         {
             // TODO: Add your initialization logic here
             CardInit();
+            ShowDeck();
             base.Initialize();
         }
 
@@ -64,6 +65,7 @@ namespace Elevens_Pass1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -76,7 +78,10 @@ namespace Elevens_Pass1
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            BeginDraw();
 
+
+            EndDraw();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
@@ -84,10 +89,22 @@ namespace Elevens_Pass1
 
         public void CardInit()
         {
-            //Add every card of hearts
+            //Add every card 
             for (int i = 0; i < 14; i++)
             {
                 Cards.Add("H" + i++);
+                Cards.Add("D" + i++);
+                Cards.Add("S" + i++);
+                Cards.Add("C" + i++);
+            }
+        }
+
+        public void ShowDeck()
+        {
+            //Add every card of hearts
+            for (int i = 0; i < Cards.Count; i++)
+            {
+                System.Console.Write(Cards[i] + " ");
             }
         }
     }
