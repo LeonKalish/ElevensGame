@@ -21,7 +21,11 @@ namespace ELEVENS
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        List<Vector2> CardsList = new List<Vector2>();
+        List<int> CardsList = new List<int>();
+        List<int>[,] board3D = new List<int> [2, 6];
+
+        int selectedCard1;
+        int selectedCard2;
 
         SpriteFont TitleFont;
 
@@ -58,7 +62,9 @@ namespace ELEVENS
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TitleFont = Content.Load<SpriteFont>("Fonts/TitleFont");
+            LoadBoardLists();
             CardInit();
+            SetUpCardsFromDeck();
 
             // TODO: use this.Content to load your game content here
         }
@@ -93,26 +99,72 @@ namespace ELEVENS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            //This is a change
+            this.IsMouseVisible = true;
             spriteBatch.Begin();
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.DrawString(TitleFont, Convert.ToString(CardsList[1]), new Vector2(100, 100), Color.White);
+
+            /*
+             * when writing the draw for the board, make sure that you are drawing the top card aka list.length - 1
+             * because 0 will be the first card (bottom)
+             */
+
+
+            for (int boardColumn = 0; boardColumn < board3D.GetLength(1); ++boardColumn)
+            {
+                for (int boardRow = 0; boardRow < board3D.GetLength(0); ++boardRow)
+                {
+                    spriteBatch.DrawString(TitleFont, Convert.ToString(board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count - 1]), new Vector2(100 * (boardColumn + 1), 100 * (boardRow + 1)), Color.White);
+                }
+                
+            }
+            
             spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
 
+        //Subprogram that loads up the cards as integers into the CardsList list. 
+        //The integer is later moduolized by 13 to determine which suit the card is
         public void CardInit()
         {
-            //Load all the cards
-            for (int value = 0; value < 14; ++value)
+            for (int value = 0; value < 52; ++value)
             {
-                for (int suit = 0; suit < 4; ++suit)
+                CardsList.Add(value);
+            }
+        }
+
+        public void LoadBoardLists()
+        {
+            for (int boardcolumn = 0; boardcolumn < board3D.GetLength(1); ++boardcolumn)
+            {
+                for (int boardrow = 0; boardrow < board3D.GetLength(0); ++boardrow)
                 {
-                    CardsList.Add(new Vector2(suit,value));
+                    board3D[boardrow,boardcolumn] = new List<int>();
                 }
             }
         }
+
+        public void SetUpCardsFromDeck()
+        {
+            for (int boardcolumn = 0; boardcolumn < board3D.GetLength(1); ++boardcolumn)
+            {
+                for (int boardrow = 0; boardrow < board3D.GetLength(0); ++boardrow)
+                {
+                    board3D[boardrow, boardcolumn].Add(CardsList[0]);
+                    CardsList.RemoveAt(0);
+                }
+            }
+        }
+
+        /*
+        public void IsValidCardCombination()
+        {
+            selectedCard1 = selectedCard1 % 13;
+            
+
+        }
+        */
     }
 }
