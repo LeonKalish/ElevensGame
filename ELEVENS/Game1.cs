@@ -33,14 +33,14 @@ namespace ELEVENS
         Vector2 prevMouseClickLoc;
 
         //Card Selection variables
-        int selectedCard1;
-        int selectedCard2;
+        int selectedPile1;
+        int selectedPile2;
         bool IsCard1Selected;
         bool IsCard2Selected;
 
         //Saves x and y coordinates of the card piles chosen
-        Vector2 boardSpotSelected1;
-        Vector2 boardSpotSelected2;
+        int boardSpotSelected1;
+        int boardSpotSelected2;
 
         //Dest Rec's for card piles
         Rectangle[] pileRectangles = new Rectangle[12];
@@ -119,7 +119,6 @@ namespace ELEVENS
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            SelectedCardsValid();
             UserMouseDetails();
 
            
@@ -216,20 +215,8 @@ namespace ELEVENS
             }
             
         }
-
-        public void SelectedCardsValid()
-        {
-            if ((IsCard1Selected && IsCard2Selected) == true)
-            {
-                if (IsValidCardCombination(selectedCard1, selectedCard2))
-                {
-                    //Place one card on each pile
-                    //Reset isSelected1 to false
-                    //R
-                }
-            }
-        }
-
+               
+        //Redo the logic, have another subprogram handle the actual logic, this is just for the mouse location
         public void UserMouseDetails()
         {
             mouse = Mouse.GetState();
@@ -240,13 +227,45 @@ namespace ELEVENS
             {
                 mouseClickLoc.X = mouse.X;
                 mouseClickLoc.Y = mouse.Y;
+
+                if (IsCard1Selected == false)
+                {
+                    selectedPile1 = ClickQuadrant(mouseClickLoc);
+
+                    if (selectedPile1 > 0)
+                    {
+                        IsCard1Selected = true;
+                    }
+                }
+                
+                if (IsCard1Selected == true)
+                {
+                    selectedPile2 = ClickQuadrant(mouseClickLoc);
+
+                    if (selectedPile2 > 0)
+                    {
+                        IsCard2Selected = true;
+
+                        IsValidCardCombination(selectedPile1, selectedPile2);
+                    }
+                }
+
             }
         }
 
+        //ASK LANE
         public int ClickQuadrant(Vector2 MouseXY)
         {
-            //TODO make this work
-            return 1;
+            for (int i = 0; i < pileRectangles.Length; ++i)
+            {
+                if (pileRectangles[i].Contains(MouseXY))
+                {
+                    return i;
+                }
+                
+            }
+
+            return -1;
         }
         
         public void DefinePileRectangles()
