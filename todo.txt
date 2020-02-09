@@ -1,0 +1,17 @@
+user clicks
+
+board divided into 12 equal blocks
+	make rectangles that have action when clicked on
+
+first click saves first pile
+	have a click variable that says which one was clicked on and then resets before the next click
+
+second saves second pile
+
+check if those two are valid after doing math
+
+place one card from deck on first pile chosen
+
+place another on second pile
+
+check if valid moves are avaliable

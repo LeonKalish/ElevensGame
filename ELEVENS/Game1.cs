@@ -26,6 +26,13 @@ namespace ELEVENS
 
         int selectedCard1;
         int selectedCard2;
+        bool IsCard1Selected;
+        bool IsCard2Selected;
+
+        //Saves x and y coordinates of the card piles chosen
+        Vector2 boardSpotSelected1;
+        Vector2 boardSpotSelected2;
+
 
         SpriteFont TitleFont;
 
@@ -88,6 +95,9 @@ namespace ELEVENS
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            SelectedCardsValid();
+
+           
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -102,7 +112,7 @@ namespace ELEVENS
             this.IsMouseVisible = true;
             spriteBatch.Begin();
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.DrawString(TitleFont, Convert.ToString(CardsList[1]), new Vector2(100, 100), Color.White);
+           
 
             /*
              * when writing the draw for the board, make sure that you are drawing the top card aka list.length - 1
@@ -158,13 +168,37 @@ namespace ELEVENS
             }
         }
 
-        /*
-        public void IsValidCardCombination()
+        
+        public bool IsValidCardCombination(int Card1, int Card2)
         {
-            selectedCard1 = selectedCard1 % 13;
             
+            int sumofSelectedCards = (Card1 + Card2) % 13;
 
+            
+            if (sumofSelectedCards == 10)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+            
         }
-        */
+
+        public void SelectedCardsValid()
+        {
+            if ((IsCard1Selected && IsCard2Selected) == true)
+            {
+                if (IsValidCardCombination(selectedCard1, selectedCard2))
+                {
+                    //Place one card on each pile
+                    //Reset isSelected1 to false
+                    //R
+                }
+            }
+        }
+        
     }
 }
