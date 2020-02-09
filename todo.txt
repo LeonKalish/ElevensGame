@@ -1,5 +1,5 @@
 user clicks
-
+	ask lane about naming conventions
 board divided into 12 equal blocks
 	make rectangles that have action when clicked on
 
@@ -15,3 +15,12 @@ place one card from deck on first pile chosen
 place another on second pile
 
 check if valid moves are avaliable
+
+
+----------
+get images to work
+use width and length of one card to define rectangle to click
+define each rectangle spaced out by 1/4 width of card
+do click quadrant logic
+sum logic
+draw from deck to put on pile

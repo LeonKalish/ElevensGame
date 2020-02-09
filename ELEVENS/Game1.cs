@@ -21,9 +21,18 @@ namespace ELEVENS
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        int screenHeight;
+        int screenWidth;
+
         List<int> CardsList = new List<int>();
         List<int>[,] board3D = new List<int> [2, 6];
 
+        MouseState mouse;
+        Vector2 MouseLoc;
+        Vector2 mouseClickLoc;
+        Vector2 prevMouseClickLoc;
+
+        //Card Selection variables
         int selectedCard1;
         int selectedCard2;
         bool IsCard1Selected;
@@ -33,8 +42,15 @@ namespace ELEVENS
         Vector2 boardSpotSelected1;
         Vector2 boardSpotSelected2;
 
+        //Dest Rec's for card piles
+        Rectangle[] pileRectangles = new Rectangle[12];
 
+        //Fonts
         SpriteFont TitleFont;
+
+        //Images and their rectangles
+        Texture2D bgImg;
+        Rectangle bgRec;
 
         public Game1()
         {
@@ -54,8 +70,11 @@ namespace ELEVENS
             
             base.Initialize();
 
-            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferWidth = 1200;
             graphics.PreferredBackBufferHeight = 800;
+
+            screenWidth = graphics.PreferredBackBufferWidth;
+            screenHeight = graphics.PreferredBackBufferHeight;
             graphics.ApplyChanges();
         }
 
@@ -69,9 +88,14 @@ namespace ELEVENS
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TitleFont = Content.Load<SpriteFont>("Fonts/TitleFont");
+            bgImg = Content.Load<Texture2D>("images/backgrounds/table");
+
+            bgRec = new Rectangle(0, 0, screenWidth, screenHeight);
+
             LoadBoardLists();
             CardInit();
             SetUpCardsFromDeck();
+            DefinePileRectangles();
 
             // TODO: use this.Content to load your game content here
         }
@@ -96,6 +120,7 @@ namespace ELEVENS
                 Exit();
 
             SelectedCardsValid();
+            UserMouseDetails();
 
            
             // TODO: Add your update logic here
@@ -112,7 +137,8 @@ namespace ELEVENS
             this.IsMouseVisible = true;
             spriteBatch.Begin();
             GraphicsDevice.Clear(Color.CornflowerBlue);
-           
+
+            spriteBatch.Draw(bgImg, bgRec, Color.White);
 
             /*
              * when writing the draw for the board, make sure that you are drawing the top card aka list.length - 1
@@ -124,10 +150,14 @@ namespace ELEVENS
             {
                 for (int boardRow = 0; boardRow < board3D.GetLength(0); ++boardRow)
                 {
-                    spriteBatch.DrawString(TitleFont, Convert.ToString(board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count - 1]), new Vector2(100 * (boardColumn + 1), 100 * (boardRow + 1)), Color.White);
+                    //Ugly
+                    spriteBatch.DrawString(TitleFont, Convert.ToString(board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count - 1]), new Vector2(200 * (boardColumn + 1), 200 * (boardRow + 1)), Color.White);
                 }
                 
             }
+
+            
+            spriteBatch.DrawString(TitleFont, Convert.ToString(MouseLoc), MouseLoc, Color.White);
             
             spriteBatch.End();
             // TODO: Add your drawing code here
@@ -199,6 +229,33 @@ namespace ELEVENS
                 }
             }
         }
+
+        public void UserMouseDetails()
+        {
+            mouse = Mouse.GetState();
+            MouseLoc.X = mouse.X;
+            MouseLoc.Y = mouse.Y;
+            
+            if (mouse.LeftButton == ButtonState.Pressed)
+            {
+                mouseClickLoc.X = mouse.X;
+                mouseClickLoc.Y = mouse.Y;
+            }
+        }
+
+        public int ClickQuadrant(Vector2 MouseXY)
+        {
+            //TODO make this work
+            return 1;
+        }
         
+        public void DefinePileRectangles()
+        {
+            for (int i = 0; i < pileRectangles.Length; ++i)
+            {
+                //pileRectangles[i] = ()
+            }
+           
+        }
     }
 }
