@@ -52,6 +52,10 @@ namespace ELEVENS
         Texture2D bgImg;
         Rectangle bgRec;
 
+        Texture2D cardsImg;
+        Texture2D cardBackImg;
+        Rectangle cardRec;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -67,15 +71,20 @@ namespace ELEVENS
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            
+
+            screenWidth = 1200;
+            screenHeight = 800;
+
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+
+            graphics.ApplyChanges();
+
             base.Initialize();
 
-            graphics.PreferredBackBufferWidth = 1200;
-            graphics.PreferredBackBufferHeight = 800;
+            
 
-            screenWidth = graphics.PreferredBackBufferWidth;
-            screenHeight = graphics.PreferredBackBufferHeight;
-            graphics.ApplyChanges();
+            
         }
 
         /// <summary>
@@ -89,6 +98,8 @@ namespace ELEVENS
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TitleFont = Content.Load<SpriteFont>("Fonts/TitleFont");
             bgImg = Content.Load<Texture2D>("images/backgrounds/table");
+            cardsImg = Content.Load<Texture2D>("images/sprites/CardFaces");
+            cardBackImg = Content.Load<Texture2D>("images/sprites/CardBack");
 
             bgRec = new Rectangle(0, 0, screenWidth, screenHeight);
 
@@ -130,7 +141,7 @@ namespace ELEVENS
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param
         protected override void Draw(GameTime gameTime)
         {
             this.IsMouseVisible = true;
