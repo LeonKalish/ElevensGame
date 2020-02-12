@@ -1,5 +1,5 @@
-user clicks
-	ask lane about naming conventions
+user clicks //
+	ask lane about naming conventions  //
 board divided into 12 equal blocks
 	make rectangles that have action when clicked on
 
@@ -23,4 +23,7 @@ use width and length of one card to define rectangle to click
 define each rectangle spaced out by 1/4 width of card
 do click quadrant logic
 sum logic
-draw from deck to put on pile
+draw from deck to put on pile 
+
+------
+Draw(img, destRec, new Rectangle(cardw*col, cardh * row, cardw, cardH), Color.White)

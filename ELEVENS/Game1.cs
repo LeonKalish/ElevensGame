@@ -24,6 +24,9 @@ namespace ELEVENS
         int screenHeight;
         int screenWidth;
 
+        int cardHeight;
+        int cardWidth;
+
         List<int> CardsList = new List<int>();
         List<int>[,] board3D = new List<int> [2, 6];
 
@@ -43,7 +46,8 @@ namespace ELEVENS
         int boardSpotSelected2;
 
         //Dest Rec's for card piles
-        Rectangle[] pileRectangles = new Rectangle[12];
+        //Rectangle[] pileRectangles = new Rectangle[12];
+        List<Rectangle> pileRectangles = new List<Rectangle>();
 
         //Fonts
         SpriteFont TitleFont;
@@ -102,6 +106,9 @@ namespace ELEVENS
             cardBackImg = Content.Load<Texture2D>("images/sprites/CardBack");
 
             bgRec = new Rectangle(0, 0, screenWidth, screenHeight);
+
+            cardWidth = cardsImg.Width / 13;
+            cardHeight = cardsImg.Height / 13;
 
             LoadBoardLists();
             CardInit();
@@ -162,6 +169,7 @@ namespace ELEVENS
                 {
                     //Ugly
                     spriteBatch.DrawString(TitleFont, Convert.ToString(board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count - 1]), new Vector2(200 * (boardColumn + 1), 200 * (boardRow + 1)), Color.White);
+
                 }
                 
             }
@@ -183,6 +191,11 @@ namespace ELEVENS
             {
                 CardsList.Add(value);
             }
+        }
+        
+        public void DrawCardImages(int cardValue)
+        {
+            //spriteBatch.Draw(cardsImg, )
         }
 
         public void LoadBoardLists()
@@ -267,7 +280,7 @@ namespace ELEVENS
         //ASK LANE
         public int ClickQuadrant(Vector2 MouseXY)
         {
-            for (int i = 0; i < pileRectangles.Length; ++i)
+            for (int i = 0; i < pileRectangles.Count; ++i)
             {
                 if (pileRectangles[i].Contains(MouseXY))
                 {
@@ -281,11 +294,13 @@ namespace ELEVENS
         
         public void DefinePileRectangles()
         {
-            for (int i = 0; i < pileRectangles.Length; ++i)
+            for (int boardcolumn = 0; boardcolumn < board3D.GetLength(1); ++boardcolumn)
             {
-                //pileRectangles[i] = ()
+                for (int boardrow = 0; boardrow < board3D.GetLength(0); ++boardrow)
+                {
+                    pileRectangles.Add(new Rectangle((100 + cardWidth * boardcolumn), (100 + cardHeight * boardrow), cardWidth, cardHeight));
+                }
             }
-           
         }
     }
 }
