@@ -30,7 +30,7 @@ namespace ELEVENS
         int cardWidth;
 
         //Make the cards slightly larger when being drawn
-        double sizeModifier = 1.35;
+        double sizeModifier = 1.30;
 
         List<int> CardsList = new List<int>();
         List<int>[,] board3D = new List<int> [2, 6];
@@ -144,6 +144,8 @@ namespace ELEVENS
                 Exit();
 
             UserMouseDetails();
+            
+        
 
            
             // TODO: Add your update logic here
@@ -205,14 +207,14 @@ namespace ELEVENS
                 CardsList.Add(value);
             }
         }
-        
-        public Vector2 DrawLogicForCards(int cardValue)
-        {
-            int cardSuit = cardValue / 13;
-            int cardRank = cardValue % 13;
 
-            return new Vector2(cardSuit, cardRank);
-        }
+        //public Vector2 DrawLogicForCards(int cardValue)
+        //{
+        //    int cardSuit = cardValue / 13;
+        //    int cardRank = cardValue % 13;
+
+        //    return new Vector2(cardSuit, cardRank);
+        //}
 
         //Initializes the board's lists which act as piles where are cards are added to. 
         public void LoadBoardLists()
@@ -241,13 +243,13 @@ namespace ELEVENS
             }
         }
 
-        
-        public bool IsValidCardCombination(int Card1, int Card2)
-        {
-            
-            int sumofSelectedCards = (Card1 + Card2) % 13;
 
-            
+        public bool IsValidCardCombination(Vector2 pile1XY, Vector2 pile2XY)
+        {
+
+            //int sumofSelectedCards = ( (board3D[pile1XY.X,pile1XY.Y][board3D[[pile1XY.X, pile1XY.Y].Coun]- 1+ pile2XY) % 13;
+            int sumOfSelectedCards = ((board3D[pile1XY][board3D[pile1XY].Count - 1]) + (board3D[pile2XY][board3D[pile2XY].Count - 1]) % 13);
+
             if (sumofSelectedCards == 10)
             {
                 return true;
@@ -273,6 +275,8 @@ namespace ELEVENS
                 mouseClickLoc.Y = mouse.Y;
 
             }
+
+            CardClickLogic(mouseClickLoc);
         }
 
         public void CardClickLogic(Vector2 mouseClickLoc)
@@ -295,7 +299,7 @@ namespace ELEVENS
                 {
                     IsCard2Selected = true;
 
-                   //6 IsValidCardCombination(board3d[selectedPile1][], selectedPile2);
+                   IsValidCardCombination(board3D[selectedPile1, selectedPile2]);
                 }
             }
 
@@ -303,15 +307,19 @@ namespace ELEVENS
 
         public void ShuffleCards()
         {
-            for (int i = 0; i < CardsList.Count; ++i)
+            for (int i = 0; i < Math.Pow(10,4); ++i)
             {
-                int randomIndex = rng.Next(CardsList.Count);
-                int firstCard = CardsList[i];
-                int secondCard = CardsList[randomIndex];
+                for (int j = 0; j < CardsList.Count; ++j)
+                {
+                    int randomIndex = rng.Next(CardsList.Count);
+                    int firstCard = CardsList[j];
+                    int secondCard = CardsList[randomIndex];
 
-                CardsList[randomIndex] = firstCard;
-                CardsList[i] = secondCard;
+                    CardsList[randomIndex] = firstCard;
+                    CardsList[j] = secondCard;
+                }
             }
+                
         }
 
         //ASK LANE
