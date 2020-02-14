@@ -21,11 +21,16 @@ namespace ELEVENS
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        Random rng = new Random();
+
         int screenHeight;
         int screenWidth;
 
         int cardHeight;
         int cardWidth;
+
+        //Make the cards slightly larger when being drawn
+        double sizeModifier = 1.35;
 
         List<int> CardsList = new List<int>();
         List<int>[,] board3D = new List<int> [2, 6];
@@ -36,8 +41,8 @@ namespace ELEVENS
         Vector2 prevMouseClickLoc;
 
         //Card Selection variables
-        int selectedPile1;
-        int selectedPile2;
+        Vector2 selectedPile1;
+        Vector2 selectedPile2;
         bool IsCard1Selected;
         bool IsCard2Selected;
 
@@ -47,7 +52,7 @@ namespace ELEVENS
 
         //Dest Rec's for card piles
         //Rectangle[] pileRectangles = new Rectangle[12];
-        List<Rectangle> pileRectangles = new List<Rectangle>();
+        Rectangle[,] pileRectangles = new Rectangle [2,6];
 
         //Fonts
         SpriteFont TitleFont;
@@ -108,12 +113,13 @@ namespace ELEVENS
             bgRec = new Rectangle(0, 0, screenWidth, screenHeight);
 
             cardWidth = cardsImg.Width / 13;
-            cardHeight = cardsImg.Height / 13;
+            cardHeight = cardsImg.Height / 4;
 
             LoadBoardLists();
             CardInit();
+            ShuffleCards();
             SetUpCardsFromDeck();
-            DefinePileRectangles();
+            DefineDestRecs();
 
             // TODO: use this.Content to load your game content here
         }
@@ -168,8 +174,15 @@ namespace ELEVENS
                 for (int boardRow = 0; boardRow < board3D.GetLength(0); ++boardRow)
                 {
                     //Ugly
-                    spriteBatch.DrawString(TitleFont, Convert.ToString(board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count - 1]), new Vector2(200 * (boardColumn + 1), 200 * (boardRow + 1)), Color.White);
+                    int cardSuit = ((board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count-1]) / 13); 
+                    int cardRank = ((board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count-1]) % 13);
 
+                    
+                    //spriteBatch.Draw(cardsImg, pileRectangles[boardRow,boardColumn][board3D[boardRow,boardColumn].Count-1], new Rectangle((cardWidth * boardColumn), cardHeight * boardColumn, cardWidth, cardHeight), Color.White);
+                    spriteBatch.Draw(cardsImg, pileRectangles[boardRow, boardColumn], new Rectangle((cardWidth * cardRank), cardHeight * cardSuit, cardWidth, cardHeight), Color.White);
+
+                    //spriteBatch.DrawString(TitleFont, Convert.ToString(board3D[boardRow, boardColumn][board3D[boardRow, boardColumn].Count - 1]), new Vector2((50*boardColumn) + 100, (100 * boardRow) + 100), Color.Red);
+                   
                 }
                 
             }
@@ -193,11 +206,15 @@ namespace ELEVENS
             }
         }
         
-        public void DrawCardImages(int cardValue)
+        public Vector2 DrawLogicForCards(int cardValue)
         {
-            //spriteBatch.Draw(cardsImg, )
+            int cardSuit = cardValue / 13;
+            int cardRank = cardValue % 13;
+
+            return new Vector2(cardSuit, cardRank);
         }
 
+        //Initializes the board's lists which act as piles where are cards are added to. 
         public void LoadBoardLists()
         {
             for (int boardcolumn = 0; boardcolumn < board3D.GetLength(1); ++boardcolumn)
@@ -205,6 +222,9 @@ namespace ELEVENS
                 for (int boardrow = 0; boardrow < board3D.GetLength(0); ++boardrow)
                 {
                     board3D[boardrow,boardcolumn] = new List<int>();
+
+                    //Is this right???
+                    pileRectangles[boardrow, boardcolumn] = new Rectangle();
                 }
             }
         }
@@ -252,53 +272,75 @@ namespace ELEVENS
                 mouseClickLoc.X = mouse.X;
                 mouseClickLoc.Y = mouse.Y;
 
-                if (IsCard1Selected == false)
+            }
+        }
+
+        public void CardClickLogic(Vector2 mouseClickLoc)
+        {
+            if (IsCard1Selected == false)
+            {
+                selectedPile1 = ClickQuadrant(mouseClickLoc);
+
+                if (selectedPile1!= new Vector2(-1, -1))
                 {
-                    selectedPile1 = ClickQuadrant(mouseClickLoc);
-
-                    if (selectedPile1 > 0)
-                    {
-                        IsCard1Selected = true;
-                    }
+                    IsCard1Selected = true;
                 }
-                
-                if (IsCard1Selected == true)
+            }
+
+            if (IsCard1Selected == true)
+            {
+                selectedPile2 = ClickQuadrant(mouseClickLoc);
+
+                if (selectedPile2 != new Vector2(-1,-1))
                 {
-                    selectedPile2 = ClickQuadrant(mouseClickLoc);
+                    IsCard2Selected = true;
 
-                    if (selectedPile2 > 0)
-                    {
-                        IsCard2Selected = true;
-
-                        IsValidCardCombination(selectedPile1, selectedPile2);
-                    }
+                   //6 IsValidCardCombination(board3d[selectedPile1][], selectedPile2);
                 }
+            }
 
+        }
+
+        public void ShuffleCards()
+        {
+            for (int i = 0; i < CardsList.Count; ++i)
+            {
+                int randomIndex = rng.Next(CardsList.Count);
+                int firstCard = CardsList[i];
+                int secondCard = CardsList[randomIndex];
+
+                CardsList[randomIndex] = firstCard;
+                CardsList[i] = secondCard;
             }
         }
 
         //ASK LANE
-        public int ClickQuadrant(Vector2 MouseXY)
-        {
-            for (int i = 0; i < pileRectangles.Count; ++i)
-            {
-                if (pileRectangles[i].Contains(MouseXY))
-                {
-                    return i;
-                }
-                
-            }
-
-            return -1;
-        }
-        
-        public void DefinePileRectangles()
+        public Vector2 ClickQuadrant(Vector2 MouseXY)
         {
             for (int boardcolumn = 0; boardcolumn < board3D.GetLength(1); ++boardcolumn)
             {
                 for (int boardrow = 0; boardrow < board3D.GetLength(0); ++boardrow)
                 {
-                    pileRectangles.Add(new Rectangle((100 + cardWidth * boardcolumn), (100 + cardHeight * boardrow), cardWidth, cardHeight));
+                    if (pileRectangles[boardrow,boardcolumn].Contains(MouseXY))
+                    {
+                        return new Vector2 (boardrow,boardcolumn);
+                    }
+                }
+            }
+
+            return new Vector2(-1, -1);
+        }
+        
+        //This subprogram defines the rectangles to which the images will be drawn to. The number of the pile correlates to the pile itself (Pile 0 = top left destRec (0)).
+        public void DefineDestRecs()
+        {
+            //Iterate through the rows then the columns, so the rectangles are initizalized by columns. 
+            for (int boardcolumn = 0; boardcolumn < board3D.GetLength(1); ++boardcolumn)
+            {
+                for (int boardrow = 0; boardrow < board3D.GetLength(0); ++boardrow)
+                {
+                    //pileRectangles[boardrow,boardcolumn] = new Rectangle((100 + (cardWidth * boardcolumn) +50 ), (200 + (cardHeight * boardrow + 50)), cardWidth, cardHeight);
+                    pileRectangles[boardrow, boardcolumn] = new Rectangle((boardcolumn * cardWidth*2) + 100, (boardrow * cardHeight * 2) + 200, Convert.ToInt32(cardWidth*sizeModifier), Convert.ToInt32(cardHeight*sizeModifier));
                 }
             }
         }
