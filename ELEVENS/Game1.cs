@@ -246,11 +246,11 @@ namespace ELEVENS
 
         public bool IsValidCardCombination(Vector2 pile1XY, Vector2 pile2XY)
         {
-
+            
             //int sumofSelectedCards = ( (board3D[pile1XY.X,pile1XY.Y][board3D[[pile1XY.X, pile1XY.Y].Coun]- 1+ pile2XY) % 13;
-            int sumOfSelectedCards = ((board3D[pile1XY][board3D[pile1XY].Count - 1]) + (board3D[pile2XY][board3D[pile2XY].Count - 1]) % 13);
-
-            if (sumofSelectedCards == 10)
+            int sumOfSelectedCards = ((board3D[(int)pile1XY.X, (int)pile1XY.Y][board3D[(int)pile1XY.X, (int)pile1XY.Y].Count - 1]) + ((board3D[(int)pile2XY.X, (int)pile2XY.Y][board3D[(int)pile2XY.X, (int)pile2XY.Y].Count - 1])) % 13);
+            
+            if (sumOfSelectedCards == 10)
             {
                 return true;
             }
@@ -299,7 +299,7 @@ namespace ELEVENS
                 {
                     IsCard2Selected = true;
 
-                   IsValidCardCombination(board3D[selectedPile1, selectedPile2]);
+                   IsValidCardCombination(board3D[(int)selectedPile1.X, (int)selectedPile1.Y], board3D[(int)selectedPile2.X, (int)selectedPile2.Y]));
                 }
             }
 
